@@ -1,26 +1,27 @@
-import { withAuth } from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 
-export default withAuth(
-  function middleware(req) {
+export async function middleware(request: NextRequest) {
+  const token = await getToken({ req: request })
+  const isAuth = !!token
+  const isAuthPage = request.nextUrl.pathname.startsWith('/auth/')
+  const isApiAuth = request.nextUrl.pathname.startsWith('/api/auth/')
+  const isApiSeed = request.nextUrl.pathname === '/api/seed'
+  const isHomePage = request.nextUrl.pathname === '/'
+
+  // Allow access to auth pages, api auth routes, seed route, and home page
+  if (isAuthPage || isApiAuth || isApiSeed || isHomePage) {
     return NextResponse.next()
-  },
-  {
-    callbacks: {
-      authorized: ({ req, token }) => {
-        // Allow access to auth pages without token
-        if (req.nextUrl.pathname.startsWith('/auth/') || 
-            req.nextUrl.pathname === '/' ||
-            req.nextUrl.pathname.startsWith('/api/auth/') ||
-            req.nextUrl.pathname === '/api/seed') {
-          return true
-        }
-        // Require token for all other pages
-        return !!token
-      }
-    }
   }
-)
+
+  // Redirect to login if not authenticated
+  if (!isAuth) {
+    const url = new URL('/auth/login', request.url)
+    return NextResponse.redirect(url)
+  }
+
+  return NextResponse.next()
+}
 
 export const config = {
   matcher: [
@@ -31,6 +32,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public folder
      */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

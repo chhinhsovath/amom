@@ -55,8 +55,8 @@ export const authOptions: NextAuthOptions = {
           id: user[0].id,
           email: user[0].email,
           name: `${user[0].firstName} ${user[0].lastName}`,
-          role: user[0].role,
-          organizationId: user[0].organizationId,
+          role: user[0].role || 'user',
+          organizationId: user[0].organizationId || undefined,
         };
       },
     }),

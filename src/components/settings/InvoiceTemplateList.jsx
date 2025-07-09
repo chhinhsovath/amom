@@ -14,7 +14,7 @@ export default function InvoiceTemplateList({ templates, loading, onEdit, onDele
         <Card className="border-dashed">
             <CardContent className="p-12 text-center">
                 <h3 className="text-lg font-semibold">No branding themes found</h3>
-                <p className="text-slate-500">Click "New Branding Theme" to create your first invoice template.</p>
+                <p className="text-slate-500">Click &quot;New Branding Theme&quot; to create your first invoice template.</p>
             </CardContent>
         </Card>
       )

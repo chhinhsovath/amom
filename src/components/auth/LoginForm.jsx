@@ -112,7 +112,7 @@ export default function LoginForm({ onSwitchToRegister }) {
 
           <div className="text-center pt-4 border-t border-slate-200">
             <p className="text-sm text-slate-600">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Button
                 variant="link"
                 className="p-0 h-auto font-semibold text-emerald-600 hover:text-emerald-700"

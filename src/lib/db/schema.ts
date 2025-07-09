@@ -57,7 +57,7 @@ export const accounts = pgTable('accounts', {
   code: varchar('code', { length: 50 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   type: accountTypeEnum('type').notNull(),
-  parentAccountId: uuid('parent_account_id').references(() => accounts.id),
+  parentAccountId: uuid('parent_account_id'),
   isBankAccount: boolean('is_bank_account').default(false),
   isActive: boolean('is_active').default(true),
   taxRateId: uuid('tax_rate_id'),

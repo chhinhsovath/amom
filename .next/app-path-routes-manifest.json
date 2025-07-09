@@ -1,0 +1,6 @@
+{
+  "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
+  "/_not-found/page": "/_not-found",
+  "/auth/login/page": "/auth/login",
+  "/page": "/"
+}

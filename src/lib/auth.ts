@@ -8,11 +8,11 @@ import { eq } from 'drizzle-orm';
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   pages: {
     signIn: '/auth/login',
-    signOut: '/auth/logout',
-    error: '/auth/error',
+    error: '/auth/login',
   },
   providers: [
     CredentialsProvider({

@@ -30,12 +30,14 @@ function LoginForm() {
         email,
         password,
         redirect: false,
+        callbackUrl: '/dashboard'
       })
 
       if (result?.error) {
         setError('Invalid email or password')
-      } else {
+      } else if (result?.ok) {
         router.push('/dashboard')
+        router.refresh()
       }
     } catch (error) {
       setError('An error occurred. Please try again.')

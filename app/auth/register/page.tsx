@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { hash } from 'bcryptjs'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({

@@ -1,18 +1,18 @@
-import MockDataService from './MockDataService';
+import api from './api';
 import ClientAuthService from './ClientAuthService';
 
 // Local data service to replace Base44 SDK entities
 export class LocalDataService {
   static getCurrentOrganizationId() {
     const user = ClientAuthService.getCurrentUser();
-    return user?.organizationId || '550e8400-e29b-41d4-a716-446655440000'; // Demo organization ID
+    return user?.organizationId || '550e8400-e29b-41d4-a716-446655440000';
   }
 
   // Account management
   static Account = {
     async list(orderBy = 'code', limit = 100) {
       try {
-        return await MockDataService.getAccounts({ is_active: true }, { orderBy, limit });
+        return await api.accounts.list({ orderBy, limit, active: true });
       } catch (error) {
         console.error('Error fetching accounts:', error);
         return [];
@@ -20,20 +20,24 @@ export class LocalDataService {
     },
 
     async findById(id) {
-      const accounts = await MockDataService.getAccounts();
-      return accounts.find(account => account.id === id) || null;
+      try {
+        return await api.accounts.get(id);
+      } catch (error) {
+        console.error('Error fetching account:', error);
+        return null;
+      }
     },
 
     async create(data) {
-      return await MockDataService.create('accounts', data);
+      return await api.accounts.create(data);
     },
 
     async update(id, data) {
-      return await MockDataService.update('accounts', id, data);
+      return await api.accounts.update(id, data);
     },
 
     async delete(id) {
-      return await MockDataService.delete('accounts', id);
+      return await api.accounts.delete(id);
     }
   };
 
@@ -41,7 +45,7 @@ export class LocalDataService {
   static Contact = {
     async list(orderBy = 'name', limit = 100) {
       try {
-        return await MockDataService.getContacts({ is_active: true }, { orderBy, limit });
+        return await api.contacts.list({ orderBy, limit, active: true });
       } catch (error) {
         console.error('Error fetching contacts:', error);
         return [];
@@ -50,7 +54,7 @@ export class LocalDataService {
 
     async filter(criteria) {
       try {
-        return await MockDataService.getContacts(criteria);
+        return await api.contacts.list(criteria);
       } catch (error) {
         console.error('Error filtering contacts:', error);
         return [];
@@ -58,20 +62,24 @@ export class LocalDataService {
     },
 
     async findById(id) {
-      const contacts = await MockDataService.getContacts();
-      return contacts.find(contact => contact.id === id) || null;
+      try {
+        return await api.contacts.get(id);
+      } catch (error) {
+        console.error('Error fetching contact:', error);
+        return null;
+      }
     },
 
     async create(data) {
-      return await MockDataService.create('contacts', data);
+      return await api.contacts.create(data);
     },
 
     async update(id, data) {
-      return await MockDataService.update('contacts', id, data);
+      return await api.contacts.update(id, data);
     },
 
     async delete(id) {
-      return await MockDataService.delete('contacts', id);
+      return await api.contacts.delete(id);
     }
   };
 
@@ -80,7 +88,7 @@ export class LocalDataService {
     async list(orderBy = '-created_at', limit = 100) {
       try {
         const orderField = orderBy.startsWith('-') ? orderBy.substring(1) + ' DESC' : orderBy;
-        return await MockDataService.getInvoices({}, { orderBy: orderField, limit });
+        return await api.invoices.list({ orderBy: orderField, limit });
       } catch (error) {
         console.error('Error fetching invoices:', error);
         return [];
@@ -88,20 +96,24 @@ export class LocalDataService {
     },
 
     async findById(id) {
-      const invoices = await MockDataService.getInvoices();
-      return invoices.find(invoice => invoice.id === id) || null;
+      try {
+        return await api.invoices.get(id);
+      } catch (error) {
+        console.error('Error fetching invoice:', error);
+        return null;
+      }
     },
 
     async create(data) {
-      return await MockDataService.create('invoices', data);
+      return await api.invoices.create(data);
     },
 
     async update(id, data) {
-      return await MockDataService.update('invoices', id, data);
+      return await api.invoices.update(id, data);
     },
 
     async delete(id) {
-      return await MockDataService.delete('invoices', id);
+      return await api.invoices.delete(id);
     }
   };
 
@@ -110,7 +122,7 @@ export class LocalDataService {
     async list(orderBy = '-created_at', limit = 100) {
       try {
         const orderField = orderBy.startsWith('-') ? orderBy.substring(1) + ' DESC' : orderBy;
-        return await MockDataService.getBills({}, { orderBy: orderField, limit });
+        return await api.bills.list({ orderBy: orderField, limit });
       } catch (error) {
         console.error('Error fetching bills:', error);
         return [];
@@ -118,20 +130,24 @@ export class LocalDataService {
     },
 
     async findById(id) {
-      const bills = await MockDataService.getBills();
-      return bills.find(bill => bill.id === id) || null;
+      try {
+        return await api.bills.get(id);
+      } catch (error) {
+        console.error('Error fetching bill:', error);
+        return null;
+      }
     },
 
     async create(data) {
-      return await MockDataService.create('bills', data);
+      return await api.bills.create(data);
     },
 
     async update(id, data) {
-      return await MockDataService.update('bills', id, data);
+      return await api.bills.update(id, data);
     },
 
     async delete(id) {
-      return await MockDataService.delete('bills', id);
+      return await api.bills.delete(id);
     }
   };
 
@@ -139,7 +155,7 @@ export class LocalDataService {
   static Transaction = {
     async list(orderBy = '-date', limit = 100) {
       try {
-        return await MockDataService.getTransactions({}, { orderBy, limit });
+        return await api.transactions.list({ orderBy, limit });
       } catch (error) {
         console.error('Error fetching transactions:', error);
         return [];
@@ -148,7 +164,7 @@ export class LocalDataService {
 
     async filter(criteria) {
       try {
-        return await MockDataService.getTransactions(criteria);
+        return await api.transactions.list(criteria);
       } catch (error) {
         console.error('Error filtering transactions:', error);
         return [];
@@ -160,7 +176,7 @@ export class LocalDataService {
   static Tax = {
     async list(orderBy = 'name', limit = 100) {
       try {
-        return await MockDataService.getTaxRates({ is_active: true }, { orderBy, limit });
+        return await api.taxes.list({ orderBy, limit, active: true });
       } catch (error) {
         console.error('Error fetching tax rates:', error);
         return [];
@@ -168,7 +184,7 @@ export class LocalDataService {
     },
 
     async create(data) {
-      return await MockDataService.create('taxRates', data);
+      return await api.taxes.create(data);
     }
   };
 
@@ -176,7 +192,7 @@ export class LocalDataService {
   static JournalEntry = {
     async list(orderBy = '-date', limit = 100) {
       try {
-        return await MockDataService.getTransactions({}, { orderBy, limit });
+        return await api.transactions.list({ orderBy, limit });
       } catch (error) {
         console.error('Error fetching journal entries:', error);
         return [];
@@ -184,7 +200,7 @@ export class LocalDataService {
     },
 
     async create(data) {
-      return await MockDataService.create('transactions', data);
+      return await api.transactions.createJournalEntry(data);
     }
   };
 
@@ -192,7 +208,12 @@ export class LocalDataService {
   static BankAccount = {
     async list(orderBy = 'code', limit = 100) {
       try {
-        return await MockDataService.getBankAccounts({ is_active: true }, { orderBy, limit });
+        // Filter accounts to only show bank accounts
+        const accounts = await api.accounts.list({ orderBy, limit, active: true });
+        return accounts.filter(account => 
+          account.account_type === 'Asset' && 
+          account.name.toLowerCase().includes('bank')
+        );
       } catch (error) {
         console.error('Error fetching bank accounts:', error);
         return [];
@@ -204,7 +225,7 @@ export class LocalDataService {
   static Item = {
     async list(orderBy = 'item_code', limit = 100) {
       try {
-        return await MockDataService.getItems({ is_active: true }, { orderBy, limit });
+        return await api.items.list({ orderBy, limit, active: true });
       } catch (error) {
         console.error('Error fetching items:', error);
         return [];
@@ -212,26 +233,15 @@ export class LocalDataService {
     },
 
     async create(data) {
-      return await MockDataService.create('items', data);
+      return await api.items.create(data);
     }
   };
 
-  // User management (simplified version)
+  // User management
   static User = {
     async me() {
-      // Return current user from ClientAuthService
       try {
-        const ClientAuthService = (await import('./ClientAuthService')).default;
-        const currentUser = ClientAuthService.getCurrentUser();
-        if (currentUser) {
-          return {
-            id: currentUser.userId,
-            email: currentUser.email,
-            organization_id: currentUser.organizationId,
-            role: currentUser.role
-          };
-        }
-        return null;
+        return await api.auth.me();
       } catch (error) {
         console.error('Error getting current user:', error);
         return null;
@@ -239,7 +249,7 @@ export class LocalDataService {
     },
 
     logout() {
-      // This will be handled by ClientAuthService - placeholder for compatibility
+      // This will be handled by ClientAuthService
       console.log('User logout called');
     }
   };

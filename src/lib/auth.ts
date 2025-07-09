@@ -22,26 +22,43 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            console.log('Missing credentials');
+            return null;
+          }
 
-        const user = await db
-          .select()
-          .from(users)
-          .where(eq(users.email, credentials.email))
-          .limit(1);
+          console.log('Attempting login for:', credentials.email);
 
-        if (!user[0] || !user[0].isActive) {
-          return null;
-        }
+          const user = await db
+            .select()
+            .from(users)
+            .where(eq(users.email, credentials.email))
+            .limit(1);
 
-        const isPasswordValid = await compare(
-          credentials.password,
-          user[0].passwordHash
-        );
+          if (!user[0]) {
+            console.log('User not found:', credentials.email);
+            return null;
+          }
 
-        if (!isPasswordValid) {
+          if (!user[0].isActive) {
+            console.log('User inactive:', credentials.email);
+            return null;
+          }
+
+          const isPasswordValid = await compare(
+            credentials.password,
+            user[0].passwordHash
+          );
+
+          if (!isPasswordValid) {
+            console.log('Invalid password for:', credentials.email);
+            return null;
+          }
+
+          console.log('Login successful for:', credentials.email);
+        } catch (error) {
+          console.error('Auth error:', error);
           return null;
         }
 
